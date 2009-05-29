@@ -20,10 +20,13 @@ void checkContinue(string message) {
 }
 
 void ppm::destruct() {
+  if(width) {
   for (int y=0;y<height;++y) {
     delete [] data[y];
   }
-  delete [] data;
+  }
+  if(height) delete [] data;
+  height=width=0;
 }
 
 ppm::ppm(const char* filename) {
@@ -194,7 +197,15 @@ void ppm::copy (const ppm& src) {
   width = src.width;
   bitdepth = src.bitdepth;
   framesize = src.framesize;
-  data = src.data;
+  data = new colorRGB*[height];
+  for (int y=0;y<height;++y) {
+    data[y]=new colorRGB[width];
+    for (int x=0;x<width;++x) {
+      data[y][x][R]=src.data[y][x][R]; 
+      data[y][x][G]=src.data[y][x][G];
+      data[y][x][B]=src.data[y][x][B];
+    }
+  }
 }
 
 void ppm::poke(colorchannel color, char value, int x,int y, int radius) {

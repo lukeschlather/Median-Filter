@@ -51,7 +51,7 @@ class ppm {
   }
   void destruct();
   ppm& operator=(const ppm& src) {
-    destruct();
+    //    destruct();
     copy(src);
     return *this;
   }
