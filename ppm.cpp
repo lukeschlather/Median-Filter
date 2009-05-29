@@ -5,6 +5,7 @@
 #include "ppm.h"
 #include<cmath>
 #include<set>
+#include<cstdlib>
 using namespace std;
 
 
@@ -16,6 +17,13 @@ void checkContinue(string message) {
   if ((input!="y")&&(input!="Y")) {
     exit(1);
   }
+}
+
+void ppm::destruct() {
+  for (int y=0;y<height;++y) {
+    delete [] data[y];
+  }
+  delete [] data;
 }
 
 ppm::ppm(const char* filename) {
@@ -38,14 +46,13 @@ void ppm::read(const char* filename) {
   cout << height << " x " << width << endl;
   cout << "Bit Depth: " << bitdepth << endl;
   infile.get(); //Discard the newline
-  image.resize(height);
+  data = new colorRGB*[height];
   for (int y=0;y<height;++y) {
-    image[y].resize(width);
+    data[y]=new colorRGB[width];
     for (int x=0;x<width;++x) {
-      image[y][x].resize(3);
-      infile.get(image[y][x][R]);
-      infile.get(image[y][x][G]);
-      infile.get(image[y][x][B]);
+      infile.get(data[y][x][R]);
+      infile.get(data[y][x][G]);
+      infile.get(data[y][x][B]);
     }
   }
 }
@@ -58,9 +65,9 @@ void ppm::write(const char * filename) {
   outfile << bitdepth << endl;;
   for (int y=0;y<height;++y) {
     for (int x=0;x<width;++x) {
-      outfile.put(image[y][x][R]);
-      outfile.put(image[y][x][G]);
-      outfile.put(image[y][x][B]);
+      outfile.put(data[y][x][R]);
+      outfile.put(data[y][x][G]);
+      outfile.put(data[y][x][B]);
     }
   }
   
@@ -144,13 +151,13 @@ bool ppm::needsCleaning(int threshold,int x,int y,colorchannel c) {
   int oobs=0;
   for (int v=minY;v<maxY;v++) {
     for (int h=minX;h<maxX;h++) {
-      total+=image[v][h][c];
+      total+=data[v][h][c];
       ++oobs;
     }
   }
   int average = total/(framesize*framesize);
   
-  if(abs(average-image[y][x][c])>threshold) {
+  if(((int)abs(average-data[y][x][c]))>threshold) {
     ++modifiedPixels;
     return true;
   }
@@ -170,15 +177,15 @@ void ppm::clean(int threshold,int x, int y,colorchannel c) {
   multiset<int> values;
   for (int v=minY;v<maxY;v++) {
     for (int h=minX;h<maxX;h++) { 
-      values.insert(image[v][h][c]);
+      values.insert(data[v][h][c]);
     }
   }
-  int i=0;
-  int newval=image[y][x][c];
+  unsigned int i=0;
+  int newval=data[y][x][c];
   for(multiset<int>::iterator it=values.begin();i<values.size()/2;++i,++it) {
     newval=*it;
   }
-  image[y][x][c]=newval;
+  data[y][x][c]=newval;
 }
 
 void ppm::copy (const ppm& src) {
@@ -187,25 +194,33 @@ void ppm::copy (const ppm& src) {
   width = src.width;
   bitdepth = src.bitdepth;
   framesize = src.framesize;
-  image = src.image;
+  data = src.data;
 }
 
 void ppm::poke(colorchannel color, char value, int x,int y, int radius) {
   int oobs=0;
-  for(int i=y;i<radius;++i) {
-    for (int j=x;j<radius;++j) {
+  int xmax = radius+x;
+  int ymax = radius+y;
+  cout << "ymax: " << ymax << "xmax: " << xmax << endl;
+  if (xmax > width) xmax=width;
+  if (ymax > height) ymax=height;
+    cout << "ymax: " << ymax << "xmax: " << xmax << endl;
+    cout << "y: " << y << "x: " << x << endl;
+  for(int i=y;i<ymax;++i) {
+    for (int j=x;j<xmax;++j) {
       if((i<height)&&(j<width)) {
-	image[i][j][R]=value;
-	image[i][j][G]=0;
-	image[i][j][B]=0;
+	data[i][j][R]=value;
+	data[i][j][G]=0;
+	data[i][j][B]=0;
       }
       else {
 	++oobs;
       }
+      //cout << "(" << i << "," << j << ")" << endl;
     }
   }
   cout << oobs << endl;
-  cout << image.size() << endl;
-  cout << image[0].size() << endl;
+  cout << height << endl;
+  cout << width << endl;
   write("text.ppm");
 }

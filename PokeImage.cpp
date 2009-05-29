@@ -30,7 +30,7 @@ int main(int argc,char** argv)
   int x=atoi(argv[4]);
   int y=atoi(argv[5]);
   int radius=atoi(argv[6]);
-  
+  cout << "Radius:" << radius << endl;  
   string outfile= "changed_";
   outfile+=argv[2];
   outfile+="_r_";
