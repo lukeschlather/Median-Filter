@@ -73,9 +73,10 @@ void ppm::write(const char * filename) {
       outfile.put(data[y][x][B]);
     }
   }
-  
 }
+
 void ppm::reduceNoise(int fs,int threshold) {
+
   framesize=fs;
   modifiedPixels=0;
   ppm output(*this);
@@ -101,6 +102,7 @@ void ppm::reduceNoise(int fs,int threshold) {
   cout << "=]" << endl;
   output.write("test.ppm");
   *this=output;
+
 }
 
 void ppm::reduceNoiseAlt(int fs,int threshold) {
@@ -132,7 +134,7 @@ void ppm::reduceNoiseAlt(int fs,int threshold) {
   *this=output;
 }
 
-void ReplaceIfOOBs(const int lower,const int upper, int& val) {
+void ReplaceIfOOBs(const int& lower,const int& upper, int& val) {
   if(val<lower) {
     val=lower;
   }
@@ -222,7 +224,7 @@ void ppm::poke(colorchannel color, char value, int x,int y, int radius) {
       if((i<height)&&(j<width)) {
 	data[i][j][R]=value;
 	data[i][j][G]=0;
-	data[i][j][B]=0;
+	data[i][j][B]=value;
       }
       else {
 	++oobs;
@@ -230,7 +232,7 @@ void ppm::poke(colorchannel color, char value, int x,int y, int radius) {
       //cout << "(" << i << "," << j << ")" << endl;
     }
   }
-  cout << oobs << endl;
+  cout << "Out of bounds: " << oobs << endl;
   cout << height << endl;
   cout << width << endl;
   write("text.ppm");

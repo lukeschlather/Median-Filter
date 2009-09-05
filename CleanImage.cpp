@@ -20,9 +20,9 @@ string filenameSansExtension(string filename) {
 int main(int argc,char** argv)
 {
   if(argc!=4) {
-    cout << "Usage: ReduceImageNoise <input image> <framesize> <threshold> " << endl;
+    cout << "Usage: CleanImage <input image> <framesize> <threshold> " << endl;
+    exit(1);
   }
-  cout << "Infile: " << argv[1] << endl;
   ppm image(argv[1]);
   //Framesize,threshold
   int framesize=atoi(argv[2]);
@@ -36,6 +36,7 @@ int main(int argc,char** argv)
   outfile+=".ppm";
   //ppm other(image);
   image.reduceNoise(framesize,threshold);
+  cout << "Writing output to " << outfile << endl;
   image.write(outfile.c_str());
   // other.reduceNoiseAlt(framesize,threshold); //this version is unsurprisingly crap.
   //other.write(("Alt"+outfile).c_str());

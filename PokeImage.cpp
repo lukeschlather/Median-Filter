@@ -13,19 +13,7 @@ int main(int argc,char** argv)
   }
   cout << "Infile: " << argv[1] << endl;
   ppm image(argv[1]);
-  colorchannel color=R; /*
-  switch(*argv[2]) {
-  case 'R':
-    color=R;
-    break;
-  case 'G':
-    color=G;
-    break;
-  case 'B':
-    color=B;
-    break;
-  }
-		      */
+  colorchannel color=R;
   int value=atoi(argv[3]);
   int x=atoi(argv[4]);
   int y=atoi(argv[5]);
@@ -36,7 +24,7 @@ int main(int argc,char** argv)
   outfile+="_r_";
   outfile+=argv[3];
   outfile+=".ppm";
-  //image.reduceNoise(framesize,threshold);
+
   image.poke(color,value,x,y,radius);
   image.write(outfile.c_str());
 

@@ -15,20 +15,8 @@ struct colorRGB {
   char red;
   char green;
   char blue;
-
   char& operator[](const colorchannel chan) { 
     return ((char*)this)[chan];
-    // switch (chan) {
-    // case R:
-    //   return red;
-    // case G:
-    //   return green;
-    // case B:
-    //   return blue;
-    // default:
-    //   throw 1;
-    // }
-    return red;
   }
 };
 
