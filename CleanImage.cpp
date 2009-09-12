@@ -3,19 +3,9 @@ using namespace std;
 // Sunday, September  7 2008
 // Licensed under the LGPL
 #include<iostream>
-#include "ppm.h"
-
+#include "Image.h"
+#include "LJFS_Utils.h"
 using namespace std;
-
-string filenameSansExtension(string filename) {
-  int i=0;
-  for (i=filename.size()-1;i>=0;--i) {
-    if(filename[i]=='.') {
-      break;
-    }
-  }
-  return filename.substr(0,i);
-}
 
 int main(int argc,char** argv)
 {
@@ -23,7 +13,7 @@ int main(int argc,char** argv)
     cout << "Usage: CleanImage <input image> <framesize> <threshold> " << endl;
     exit(1);
   }
-  ppm image(argv[1]);
+  Image image(argv[1]);
   //Framesize,threshold
   int framesize=atoi(argv[2]);
   int threshold=atoi(argv[3]);
