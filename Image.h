@@ -45,15 +45,15 @@ class Image {
   void copy(const Image& src);
 
   void write (string filename);
-  void write(char const*  filename);
-   void writeJPEG(ostream& outfile);
-   void writePPM(ostream& outfile);
-
+  void write(char const*  filename)  { write(string(filename));}
+  void writePPM(ostream& outfile);
+  void writeJPEG(ostream& outfile);
+  
   void read(const string filename);
-  void read(char const* filename);
-    void readPPM(istream& infile);
-   void readJPEG(istream& infile);
-
+  void read(char const* filename){ read(string(filename));}
+  void readPPM(istream& infile);
+  void readJPEG(const char* filename);
+  
   void reduceNoise(int framesize,int threshold);
   void reduceNoiseAlt(int framesize,int threshold);
   bool needsCleaning(int threshold,int x,int y,colorchannel c);

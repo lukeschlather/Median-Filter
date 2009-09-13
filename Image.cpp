@@ -5,8 +5,14 @@
 #include<cmath>
 #include<set>
 #include<cstdlib>
+#include<stdio.h>
+#include<jpeglib.h>
+#include<setjmp.h>
+#include<jerror.h>
+
 #include "Image.h"
 #include "LJFS_Utils.h"
+
 using namespace std;
 
 
@@ -24,16 +30,14 @@ Image::Image(const char* filename) {
   read(filename);    
 }
 
-void Image::read(const char* filename) { read(string(filename));}
-void Image::write(const char* filename) { write(string(filename));}
-
 void Image::read(string filename) {
   string format = filenameExtension(filename);
-  ifstream filehandle(filename.c_str());
-    if (format=="jpeg") {//todo: compare downcased string
-      //readJPEG(filehandle);
+  //todo: downcase string; sanity checks
+    if (format=="jpeg"||format=="jpg") {
+      readJPEG(filename.c_str());
     }
     else if (format=="ppm") {
+      ifstream filehandle(filename.c_str());
       readPPM(filehandle);
     }
     else { cout << "bad format: <" << format << ">" << endl; throw 1; }
@@ -70,6 +74,63 @@ void Image::readPPM(istream& infile) {
       infile.get(data[y][x][B]);
     }
   }
+}
+
+void Image::readJPEG(const char* filename) {
+  //This is basically copied from example.c in the libjpeg-6b source tar.
+  // see that for better documentation.
+  struct jpeg_decompress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+
+  cinfo.err = jpeg_std_error(&jerr);
+
+  FILE * infile;		/* source file */
+  JSAMPARRAY buffer;		/* Output row buffer */
+  //int row_stride;   Always 3	/* physical row width in output buffer */
+
+  if ((infile = fopen(filename, "rb")) == NULL) {
+    fprintf(stderr, "can't open %s\n", filename);
+    exit(1);
+  }
+
+  jpeg_create_decompress(&cinfo);
+  jpeg_stdio_src(&cinfo, infile);
+  (void) jpeg_read_header(&cinfo, true);
+
+  (void) jpeg_start_decompress(&cinfo);
+  if(cinfo.output_components != 3 ) {
+    cout << "This program is only designed to handle images in RGB format." 
+	 << endl;
+  }
+  //  buffer = (*cinfo.mem->alloc_sarray)
+  //((j_common_ptr) &cinfo, JPOOL_IMAGE, row_stride, 1);
+  height = cinfo.output_height;
+  width  = cinfo.output_width;
+
+  cout << height << " x " << width << endl;
+
+
+  data = new colorRGB*[height];
+  buffer = (*cinfo.mem->alloc_sarray)
+		((j_common_ptr) &cinfo, JPOOL_IMAGE, width*3, 1);
+  for (int y=0;y < height;++y) {
+    cout << "reading scanline " << cinfo.output_scanline << endl;
+    data[y]=new colorRGB[width];
+    jpeg_read_scanlines(&cinfo,buffer,1);
+
+    for (int x=0;x<width*3;x+=3) {
+      cout << (int)buffer[0][x+R] << " " << x << " " << y << endl;
+      data[y][x][R] = buffer[0][x+R];
+      data[y][x][G] = buffer[0][x+G];
+      data[y][x][B] = buffer[0][x+B];
+    }
+
+  }
+  (void) jpeg_finish_decompress(&cinfo);
+  jpeg_destroy_decompress(&cinfo);
+  fclose(infile);
+
+
 }
 
 

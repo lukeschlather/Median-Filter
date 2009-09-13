@@ -3,7 +3,7 @@ using namespace std;
 // Sunday, September  7 2008
 // Licensed under the LGPL
 #include<iostream>
-#include "ppm.h"
+#include "Image.h"
 
 using namespace std;
 int main(int argc,char** argv)
@@ -12,7 +12,7 @@ int main(int argc,char** argv)
     cout << "Usage: PokeImage <input image> <RGB> <value> <x> <y> <radius> " << endl;
   }
   cout << "Infile: " << argv[1] << endl;
-  ppm image(argv[1]);
+  Image image(argv[1]);
   colorchannel color=R;
   int value=atoi(argv[3]);
   int x=atoi(argv[4]);

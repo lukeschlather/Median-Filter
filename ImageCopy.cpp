@@ -2,7 +2,7 @@
 // Sunday, September  7 2008
 // Licensed under the LGPL
 #include<iostream>
-#include "ppm.h"
+#include "Image.h"
 
 using namespace std;
 int main(int argc,char** argv)
