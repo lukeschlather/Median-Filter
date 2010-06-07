@@ -18,7 +18,7 @@ using namespace std;
 
 void Image::destruct() {
   if(width) {
-  for (int y=0;y<height;++y) {
+  for (int y=0;y<height-2;++y) {
     delete [] data[y];
   }
   }
@@ -113,13 +113,15 @@ void Image::readJPEG(const char* filename) {
   data = new colorRGB*[height];
   buffer = (*cinfo.mem->alloc_sarray)
 		((j_common_ptr) &cinfo, JPOOL_IMAGE, width*3, 1);
+  cout << "JSAMPLE: " << sizeof(JSAMPLE) << endl;
+  cout << "colorRGB: " << sizeof(colorRGB) << endl;
   for (int y=0;y < height;++y) {
     cout << "reading scanline " << cinfo.output_scanline << endl;
-    data[y]=new colorRGB[width];
+    data[y]=(colorRGB*)new char[width*3];
     jpeg_read_scanlines(&cinfo,buffer,1);
 
     for (int x=0;x<width*3;x+=3) {
-      cout << (int)buffer[0][x+R] << " " << x << " " << y << endl;
+      //cout << (int)buffer[0][x+R] << " " << x << " " << y << endl;
       data[y][x][R] = buffer[0][x+R];
       data[y][x][G] = buffer[0][x+G];
       data[y][x][B] = buffer[0][x+B];

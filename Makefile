@@ -12,7 +12,7 @@ CleanImage: CleanImage.cpp $(MYLIBS)
 PokeImage: PokeImage.cpp ppm.o
 	g++ $(OPTS) $(INCL) -o PokeImage PokeImage.cpp $(MYLIBS) $(LIBS)
 
-ImageCopy: ImageCopy.cpp ppm.o
+ImageCopy: ImageCopy.cpp Image.o
 	g++ $(OPTS) $(INCL) -o ImageCopy ImageCopy.cpp $(MYLIBS) $(LIBS)
 
 clean:

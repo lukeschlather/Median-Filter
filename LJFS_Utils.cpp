@@ -37,3 +37,15 @@ string filenameExtension(string filename) {
   }
   return filename.substr(i+1,filename.size());
 }
+
+string printCurrentTime() {
+  char buffer[100];
+  time_t t=time(0);
+  struct tm *tmp;
+  tmp = localtime(&t);
+
+  strftime(buffer,40,"%F %T",tmp);
+  string now(buffer);
+  cout << now << endl;
+  return now;
+}

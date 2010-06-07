@@ -11,7 +11,7 @@ int main(int argc,char** argv)
     cout << "Usage: ReduceImageNoise <input image> <output image> " << endl;
   }
   cout << "Infile: " << argv[1] << endl;
-  ppm image(argv[1]);
+  Image image(argv[1]);
   image.write(argv[2]);
 
 
