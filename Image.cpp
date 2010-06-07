@@ -208,6 +208,7 @@ void Image::reduceNoiseAlt(int fs,int threshold) {
   *this=output;
 }
 
+// Bounds checking; replace if out of bounds
 void ReplaceIfOOBs(const int& lower,const int& upper, int& val) {
   if(val<lower) {
     val=lower;
