@@ -14,3 +14,5 @@ This will create a new file, /home/myfile-f_5_t_100.ppm
 Framesize of 5 and threshold of 100 generally seem like sane defaults, though you can certainly play around a bit and have some fun. A framesize of 2 can be effective, and is much faster - this code is definitely not optimized. It takes a few minutes to deal with an 800x600 image on framesize 5.
 
 For some examples, see [my blog.](http://flinchbaughschlather.com/luke/2010/06/07/median-filter/)
+
+I started to work in some jpeg reading functionality which puts a libjpeg dependency which should be pretty trivial to remove.
